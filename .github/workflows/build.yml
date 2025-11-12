@@ -2,9 +2,9 @@ name: Build Windows EXE
 
 on:
   push:
-    branches: [ main, master ]
-    tags: [ 'v*.*.*' ]
-  workflow_dispatch:
+#    branches: [ main, master ]  # ✅ 这句：推送main分支就触发
+    tags: [ 'v*.*.*' ]           # ✅ 这句：推送tag也触发
+  workflow_dispatch:             # ✅ 这句：手动触发
 
 jobs:
   build:
@@ -29,11 +29,11 @@ jobs:
 
       - name: Build executable
         run: |
-          # 动态获取版本号（清理非法字符）
+          # 动态获取版本号（100%纯数字）
           $VERSION = if ($env:GITHUB_REF_TYPE -eq 'tag') { 
             $env:GITHUB_REF_NAME.TrimStart('v') 
           } else { 
-            "1.0.0." + $env:GITHUB_SHA.Substring(0, 3)  # dev版本用commit前3位
+            "1.0.0." + $env:GITHUB_RUN_NUMBER  # ✅ 纯数字，如 1.0.0.123
           }
           Write-Host "Building version: $VERSION"
           

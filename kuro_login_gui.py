@@ -1,4 +1,3 @@
-import sys
 import logging
 
 # ===== 生产环境：禁止任何模块创建日志文件 =====

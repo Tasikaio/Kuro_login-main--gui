@@ -19,6 +19,7 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
+          cache-dependency-path: 'requirements_gui.txt'  # ✅ 关键修复
 
       - name: Install dependencies
         run: |

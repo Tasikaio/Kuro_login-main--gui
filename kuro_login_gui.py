@@ -1,9 +1,31 @@
 import sys
+import logging
+
+# ===== 生产环境：禁止任何模块创建日志文件 =====
+# 劫持logging.FileHandler类，使其在打包后失效
+# if getattr(sys, 'frozen', False):
+#     # 生产环境：FileHandler返回NullHandler（不创建文件）
+#     logging.FileHandler = lambda *args, **kwargs: logging.NullHandler()
+# else:
+#     # 开发环境：正常配置
+#     logging.basicConfig(
+#         level=logging.INFO,
+#         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+#         handlers=[
+#             logging.StreamHandler(),
+#             logging.FileHandler('kuro_login_debug.log')
+#         ]
+#     )
+
+# 获取主模块logger（必须存在，否则其他模块调用logger.info()会闪退）
+logger = logging.getLogger(__name__)
+
+# ===== 你的原始代码从这里开始 =====
+import sys
 import json
 import uuid
 import string
-from typing import Optional
-import logging
+
 
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                                QHBoxLayout, QLabel, QLineEdit, QPushButton, 
@@ -11,25 +33,12 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QFont, QClipboard
 
-from loguru import logger
 import requests
 
 from geetest_captcha.geetest import GeeTest
 from utils.randomUtils import random_string
 
 
-# Configure logging
-# 只在开发环境（非打包）写入日志文件
-handlers = [logging.StreamHandler()]
-if not getattr(sys, 'frozen', False):
-    handlers.append(logging.FileHandler('kuro_login_debug.log'))
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=handlers
-)
-logger = logging.getLogger(__name__)
 
 ANDROID_CAPTCHA_ID = "3f7e2d848ce0cb7e7d019d621e556ce2"
 

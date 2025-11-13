@@ -71,6 +71,16 @@ jobs:
           path: build/
           retention-days: 30
 
+      - name: Create ZIP archive
+    run: |
+    # 进入build目录，将exe文件压缩为KuroToken.zip
+      Compress-Archive -Path build/KuroBBSToken.exe -DestinationPath KuroToken.zip
+    # 验证文件是否创建
+      if (-not (Test-Path "KuroToken.zip")) {
+        Write-Error "Failed to create KuroToken.zip"
+        exit 1
+    }
+
 #      - name: Release on tag
 #        uses: softprops/action-gh-release@v2
 #        with:

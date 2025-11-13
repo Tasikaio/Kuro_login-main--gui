@@ -56,11 +56,10 @@ jobs:
             --nofollow-import-to=transformers,sentence_transformers,timm,open_clip_torch `
             --noinclude-qt-translations `
             --python-flag=no_site,no_warnings `
-            --show-progress `
             kuro_login_gui.py
 
           if (-not (Test-Path "build/KuroBBSToken.exe")) {
-              Write-Error "Failed to build executable: build/KuroLogin.exe not found."
+              Write-Error "Failed to build executable: build/KuroBBSToken.exe not found."  # ✅ 修正错误信息
               exit 1
           }
 
@@ -72,33 +71,24 @@ jobs:
           retention-days: 30
 
       - name: Create ZIP archive
-    run: |
-    # 进入build目录，将exe文件压缩为KuroToken.zip
-      Compress-Archive -Path build/KuroBBSToken.exe -DestinationPath KuroToken.zip
-    # 验证文件是否创建
-      if (-not (Test-Path "KuroToken.zip")) {
-        Write-Error "Failed to create KuroToken.zip"
-        exit 1
-    }
+#        if: startsWith(github.ref, 'refs/tags/')  # ✅ 仅在打标签时执行
+        run: |  # ✅ 修复缩进
+          # 将exe文件压缩为KuroToken.zip
+          Compress-Archive -Path build/KuroBBSToken.exe -DestinationPath KuroToken.zip
+          # 验证文件是否创建
+          if (-not (Test-Path "KuroToken.zip")) {
+            Write-Error "Failed to create KuroToken.zip"
+            exit 1
+          }
 
-#      - name: Release on tag
-#        uses: softprops/action-gh-release@v2
-#        with:
-#          files: build/
-#          name:  KuroBBSToken ${{ github.ref_name }}
-#          draft: false
-#          prerelease: false
-#          generate_release_notes: true
-#          token: ${{ secrets.GH_TOKEN }}
-
-#      创建 Release（核心配置）
       - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')  # ✅ 仅在打标签时执行
         uses: softprops/action-gh-release@v2
         with:
-          token: ${{ secrets.GH_TOKEN }}  # 从 GitHub Secrets 读取
-          name: "KuroBBSToken ${{ github.ref_name }}"  # Release 标题
-          tag_name: ${{ github.ref_name }}  # 使用标签名（如 v1.0.0）
-          draft: false  # 不是草稿
-          prerelease: false  # 不是预发布
-          generate_release_notes: true  # 自动生成说明
-          files: KuroToken.zip  # 上传压缩包（不是目录！）
+          token: ${{ secrets.GH_TOKEN }}
+          name: "KuroBBSToken ${{ github.ref_name }}"
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: KuroToken.zip

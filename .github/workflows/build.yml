@@ -41,11 +41,11 @@ jobs:
           python -m nuitka --onefile `
             --windows-console-mode=disable `
             --output-dir=build `
-            --output-filename=KuroLogin `
+            --output-filename=KuroBBSToken.exe `
             --enable-plugin=pyqt5 `
             --windows-icon-from-ico=favicon.ico `
             --windows-company-name="KuroLogin" `
-            --windows-product-name="KuroBBSToken工具" `
+            --windows-product-name="KuroBBSToken" `
             --windows-file-version=$VERSION `
             --windows-product-version=$VERSION `
             --jobs=4 `
@@ -56,9 +56,10 @@ jobs:
             --nofollow-import-to=transformers,sentence_transformers,timm,open_clip_torch `
             --noinclude-qt-translations `
             --python-flag=no_site,no_warnings `
+            --show-progress `
             kuro_login_gui.py
 
-          if (-not (Test-Path "build/KuroLogin.exe")) {
+          if (-not (Test-Path "build/KuroBBSToken.exe")) {
               Write-Error "Failed to build executable: build/KuroLogin.exe not found."
               exit 1
           }

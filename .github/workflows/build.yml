@@ -75,8 +75,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: build/KuroLogin.exe
-          name: Kuro登录工具 ${{ github.ref_name }}
+          files: build/
+          name:  KuroBBSToken ${{ github.ref_name }}
           draft: false
           prerelease: false
           generate_release_notes: true
